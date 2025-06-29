@@ -45,3 +45,6 @@ data/
 
 # temporary
 public/Images
+
+# the usual
+.env.local

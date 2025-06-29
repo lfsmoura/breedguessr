@@ -16,4 +16,4 @@ const images = folders.map(folder => {
     });
 });
 
-fs.writeFileSync('data/index-dataset.json', JSON.stringify(output, null, 2));
+fs.writeFileSync('src/app/index-dataset.json', JSON.stringify(output, null, 2));

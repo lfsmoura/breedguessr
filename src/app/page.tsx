@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react';
-import dogData from '../../data/index-dataset.json';
+import dogData from './index-dataset.json';
+import { loadImagesFromR2 } from '../lib/image-loader';
 
 export default function  DogBreedGame() {
   const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'finished'
@@ -28,9 +29,10 @@ export default function  DogBreedGame() {
   const startGame = () => {
     const shuffled = [...dogData].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 10);
-    setSelectedDogs(selected);
-    if (gameMode === 'multiple-choice' && selected.length > 0) {
-      setMultipleChoiceOptions(generateMultipleChoiceOptions(selected[0].dogBreed));
+    const selectedWithR2Images = loadImagesFromR2(selected);
+    setSelectedDogs(selectedWithR2Images);
+    if (gameMode === 'multiple-choice' && selectedWithR2Images.length > 0) {
+      setMultipleChoiceOptions(generateMultipleChoiceOptions(selectedWithR2Images[0].dogBreed));
     }
     setGameState('playing');
     setCurrentQuestion(0);
