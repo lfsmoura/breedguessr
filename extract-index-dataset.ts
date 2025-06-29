@@ -4,8 +4,8 @@ import fs from 'node:fs';
 const folders = fs.readdirSync('data/Images');
 
 // for each folder, get the image files
-const output = []
-const images = folders.map(folder => {
+const output: { dogBreed: string, image: string }[] = [];
+folders.forEach(folder => {
     const imageFiles = fs.readdirSync(`data/Images/${folder}`);
     const dogBreed = folder.split('-')[1].replaceAll('_', ' ');
     return imageFiles.forEach(file => {

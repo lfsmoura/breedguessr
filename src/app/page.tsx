@@ -12,7 +12,7 @@ export default function  DogBreedGame() {
   const [showFireworks, setShowFireworks] = useState(false);
   const [flashRed, setFlashRed] = useState(false);
   const [selectedDogs, setSelectedDogs] = useState<typeof dogData>([]);
-  const [gameMode, setGameMode] = useState<'multiple-choice' | 'text-input'>('multiple-choice');
+  const [gameMode] = useState<'multiple-choice' | 'text-input'>('multiple-choice');
   const [multipleChoiceOptions, setMultipleChoiceOptions] = useState<string[]>([]);
 
   const allBreeds = Array.from(new Set(dogData.map(dog => dog.dogBreed)));
