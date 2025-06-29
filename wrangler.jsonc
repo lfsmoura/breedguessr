@@ -14,5 +14,11 @@
   "observability": {
     "enabled": true
   },
-  "upload_source_maps": true
+  "upload_source_maps": true,
+  "r2_buckets": [
+    {
+      "binding": "BREEDS_BUCKET",
+      "bucket_name": "breeds"
+    }
+  ]
 }
