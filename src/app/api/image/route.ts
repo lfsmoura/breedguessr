@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     console.log({searchParams});
     const key = searchParams.get('key') || 'n02085620_199.jpg';
-    const object = await bucket.get(`breeds/${key}`);
+    const object = await bucket.get(key);
 
     if (object === null) {
       return new Response("Object Not Found", { status: 404 });
@@ -23,6 +23,6 @@ export async function GET(request: NextRequest) {
     headers.set("etag", object.httpEtag);
 
     return new Response(object.body, {
-      headers,
+      headers
     })
 }
