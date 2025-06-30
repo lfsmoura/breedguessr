@@ -6,6 +6,13 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },
+  webpack: (config, { webpack }) => {
+    config.plugins.push(new webpack.IgnorePlugin({
+        resourceRegExp: /^cloudflare:workers$/,
+    }))
+
+    return config
+},
   async rewrites() {
     return [
       {

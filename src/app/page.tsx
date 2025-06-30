@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import dogData from './index-dataset.json';
 import { loadImagesFromR2 } from '../lib/image-loader';
+//import { getR2ImageUrl } from '@/lib/r2-client';
 
 export default function  DogBreedGame() {
   const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'finished'
@@ -124,6 +125,7 @@ export default function  DogBreedGame() {
       <div className="min-h-screen bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4">
         <div className="bg-white rounded-3xl shadow-2xl p-8 text-center max-w-md w-full">
           <div className="text-6xl mb-4">🐕</div>
+          <img src={`/api/image?key=n02085620_199.jpg`} alt="Dog Breed Game" width={100} height={100} />
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Dog Breed Game</h1>
           <p className="text-gray-600 mb-6">
             Guess the breed of 10 different dogs and earn points! 

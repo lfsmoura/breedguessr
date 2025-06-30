@@ -5,6 +5,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "breedguessr",
   "main": ".open-next/worker.js",
+  "vars": {
+    "NEXT_PUBLIC_POSTHOG_KEY": "@NEXT_PUBLIC_POSTHOG_KEY",
+    "NEXT_PUBLIC_POSTHOG_HOST": "@NEXT_PUBLIC_POSTHOG_HOST"
+  },
   "compatibility_date": "2025-04-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "assets": {
