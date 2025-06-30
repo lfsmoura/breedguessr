@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
   }
 
     const { searchParams } = new URL(request.url);
-    console.log({searchParams});
     const key = searchParams.get('key') || 'n02085620_199.jpg';
     const object = await bucket.get(key);
 
@@ -22,7 +21,8 @@ export async function GET(request: NextRequest) {
     object.writeHttpMetadata(headers);
     headers.set("etag", object.httpEtag);
 
-    return new Response(object.body, {
+    const buffer = await object.arrayBuffer();
+    return new Response(new Uint8Array(buffer), {
       headers
     })
 }
