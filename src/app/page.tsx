@@ -1,8 +1,7 @@
 "use client"
 import React, { useState } from 'react';
 import dogData from './index-dataset.json';
-import { loadImagesFromR2 } from '../lib/image-loader';
-//import { getR2ImageUrl } from '@/lib/r2-client';
+import Image from 'next/image';
 
 export default function  DogBreedGame() {
   const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'finished'
@@ -24,16 +23,15 @@ export default function  DogBreedGame() {
     const shuffledOthers = [...otherBreeds].sort(() => 0.5 - Math.random());
     const wrongOptions = shuffledOthers.slice(0, 3);
     const allOptions = [correctBreed, ...wrongOptions].sort(() => 0.5 - Math.random());
-    return allOptions;
+    return allOptions.slice(0, 4);
   };
 
   const startGame = () => {
     const shuffled = [...dogData].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 10);
-    const selectedWithR2Images = loadImagesFromR2(selected);
-    setSelectedDogs(selectedWithR2Images);
-    if (gameMode === 'multiple-choice' && selectedWithR2Images.length > 0) {
-      setMultipleChoiceOptions(generateMultipleChoiceOptions(selectedWithR2Images[0].dogBreed));
+    setSelectedDogs(selected);
+    if (gameMode === 'multiple-choice' && selected.length > 0) {
+      setMultipleChoiceOptions(generateMultipleChoiceOptions(selected[0].dogBreed));
     }
     setGameState('playing');
     setCurrentQuestion(0);
@@ -125,7 +123,6 @@ export default function  DogBreedGame() {
       <div className="min-h-screen bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4">
         <div className="bg-white rounded-3xl shadow-2xl p-8 text-center max-w-md w-full">
           <div className="text-6xl mb-4">🐕</div>
-          <img src={`/api/image?key=n02085620_199.jpg`} alt="Dog Breed Game" width={100} height={100} />
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Dog Breed Game</h1>
           <p className="text-gray-600 mb-6">
             Guess the breed of 10 different dogs and earn points! 
@@ -158,10 +155,12 @@ export default function  DogBreedGame() {
           </div>
 
           <div className="text-center mb-6">
-            <img
-              src={selectedDogs[currentQuestion]?.image}
+            <Image
+              src={`https://images.breedguessr.com/${selectedDogs[currentQuestion]?.hash}`}
               alt="Dog to identify"
               className="w-80 h-80 object-cover rounded-2xl mx-auto shadow-lg"
+              width={320}
+              height={320}
             />
           </div>
 

@@ -40,10 +40,21 @@
     "build": "next build",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
     "check": "npm run build && tsc",
+    "typecheck": "tsc --noEmit",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "dev": "cf-bindings-proxy r2=BREEDS_BUCKET & next dev",
     "lint": "next lint",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview --remote",
     "start": "next start"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "core-js",
+      "esbuild",
+      "sharp",
+      "unrs-resolver",
+      "workerd"
+    ]
   }
 }

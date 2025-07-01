@@ -22,7 +22,8 @@
   "r2_buckets": [
     {
       "binding": "BREEDS_BUCKET",
-      "bucket_name": "breeds"
-    }
+      "bucket_name": "breeds",
+      "preview_bucket_name": "preview",
+    },
   ]
 }
