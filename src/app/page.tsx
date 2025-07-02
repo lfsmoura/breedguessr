@@ -30,40 +30,12 @@ export default function  DogBreedGame() {
     return allOptions.slice(0, 4);
   };
 
-  const checkImageExists = async (hash: string): Promise<boolean> => {
-    try {
-      const response = await fetch(`${BASE_URL}/${hash}`, {
-        method: 'HEAD',
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      });
-      return response.ok;
-    } catch {
-      return false;
-    }
-  };
-
-  const startGame = async () => {
+  const startGame = () => {
     const shuffled = [...dogData].sort(() => 0.5 - Math.random());
-    const validDogs = [];
-    
-    for (const dog of shuffled) {
-      if (validDogs.length >= 10) break;
-      
-      const imageExists = await checkImageExists(dog.hash);
-      if (imageExists) {
-        validDogs.push(dog);
-      }
-    }
-    
-    if (validDogs.length < 10) {
-      alert(`Only found ${validDogs.length} valid images. Starting game with available dogs.`);
-    }
-    
-    setSelectedDogs(validDogs);
-    if (gameMode === 'multiple-choice' && validDogs.length > 0) {
-      setMultipleChoiceOptions(generateMultipleChoiceOptions(validDogs[0].dogBreed));
+    const selected = shuffled.slice(0, 10);
+    setSelectedDogs(selected);
+    if (gameMode === 'multiple-choice' && selected.length > 0) {
+      setMultipleChoiceOptions(generateMultipleChoiceOptions(selected[0].dogBreed));
     }
     setGameState('playing');
     setCurrentQuestion(0);
