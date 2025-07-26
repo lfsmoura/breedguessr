@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },
   images: {
-    remotePatterns: [new URL('https://images.breedguessr.com/**')],
+    remotePatterns: [process.env.NODE_ENV === 'development' ? new URL('https://pub-ae384ff5bace4bf4a689ef899b70644c.r2.dev/**') : new URL('https://images.breedguessr.com/**')],
   },
   async rewrites() {
     return [
