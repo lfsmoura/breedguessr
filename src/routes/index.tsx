@@ -1,106 +1,106 @@
-"use client"
-import React, { useState } from 'react';
-import dogData from './index-dataset.json';
-import Image from 'next/image';
+import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
+import dogData from '../data/index-dataset.json'
 
-export default function  DogBreedGame() {
-  const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'finished'
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
-  const [userAnswer, setUserAnswer] = useState('');
-  const [feedback, setFeedback] = useState(''); // 'correct', 'wrong', ''
-  const [showFireworks, setShowFireworks] = useState(false);
-  const [flashRed, setFlashRed] = useState(false);
-  const [selectedDogs, setSelectedDogs] = useState<typeof dogData>([]);
-  const [gameMode] = useState<'multiple-choice' | 'text-input'>('multiple-choice');
-  const [multipleChoiceOptions, setMultipleChoiceOptions] = useState<string[]>([]);
+export const Route = createFileRoute('/')({ component: DogBreedGame })
 
-  const BASE_URL = process.env.NODE_ENV === 'development' 
+function DogBreedGame() {
+  const [gameState, setGameState] = useState('start') // 'start', 'playing', 'finished'
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [score, setScore] = useState(0)
+  const [userAnswer, setUserAnswer] = useState('')
+  const [feedback, setFeedback] = useState('') // 'correct', 'wrong', ''
+  const [showFireworks, setShowFireworks] = useState(false)
+  const [flashRed, setFlashRed] = useState(false)
+  const [selectedDogs, setSelectedDogs] = useState<typeof dogData>([])
+  const [gameMode] = useState<'multiple-choice' | 'text-input'>('multiple-choice')
+  const [multipleChoiceOptions, setMultipleChoiceOptions] = useState<string[]>([])
+
+  const BASE_URL = import.meta.env.DEV
     ? 'https://pub-ae384ff5bace4bf4a689ef899b70644c.r2.dev'
-    : 'https://images.breedguessr.com';
+    : 'https://images.breedguessr.com'
 
-  const allBreeds = Array.from(new Set(dogData.map(dog => dog.dogBreed)));
-
+  const allBreeds = Array.from(new Set(dogData.map(dog => dog.dogBreed)))
 
   const generateMultipleChoiceOptions = (correctBreed: string) => {
-    const otherBreeds = allBreeds.filter(breed => breed !== correctBreed);
-    const shuffledOthers = [...otherBreeds].sort(() => 0.5 - Math.random());
-    const wrongOptions = shuffledOthers.slice(0, 3);
-    const allOptions = [correctBreed, ...wrongOptions].sort(() => 0.5 - Math.random());
-    return allOptions.slice(0, 4);
-  };
+    const otherBreeds = allBreeds.filter(breed => breed !== correctBreed)
+    const shuffledOthers = [...otherBreeds].sort(() => 0.5 - Math.random())
+    const wrongOptions = shuffledOthers.slice(0, 3)
+    const allOptions = [correctBreed, ...wrongOptions].sort(() => 0.5 - Math.random())
+    return allOptions.slice(0, 4)
+  }
 
   const startGame = () => {
-    const shuffled = [...dogData].sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, 10);
-    setSelectedDogs(selected);
+    const shuffled = [...dogData].sort(() => 0.5 - Math.random())
+    const selected = shuffled.slice(0, 10)
+    setSelectedDogs(selected)
     if (gameMode === 'multiple-choice' && selected.length > 0) {
-      setMultipleChoiceOptions(generateMultipleChoiceOptions(selected[0].dogBreed));
+      setMultipleChoiceOptions(generateMultipleChoiceOptions(selected[0].dogBreed))
     }
-    setGameState('playing');
-    setCurrentQuestion(0);
-    setScore(0);
-    setUserAnswer('');
-    setFeedback('');
-  };
+    setGameState('playing')
+    setCurrentQuestion(0)
+    setScore(0)
+    setUserAnswer('')
+    setFeedback('')
+  }
 
   const checkAnswer = (selectedAnswer?: string) => {
-    const currentDog = selectedDogs[currentQuestion];
-    const answer = selectedAnswer || userAnswer;
-    const userInput = answer.toLowerCase().trim();
-    const correctAnswers = [currentDog.dogBreed];
-    
-    const isCorrect = correctAnswers.some(answer => 
+    const currentDog = selectedDogs[currentQuestion]
+    const answer = selectedAnswer || userAnswer
+    const userInput = answer.toLowerCase().trim()
+    const correctAnswers = [currentDog.dogBreed]
+
+    const isCorrect = correctAnswers.some(answer =>
       answer.toLowerCase().trim() === userInput
-    );
+    )
 
     if (isCorrect) {
-      setScore(score + 10);
-      setFeedback('correct');
-      setShowFireworks(true);
-      setTimeout(() => setShowFireworks(false), 2000);
+      setScore(score + 10)
+      setFeedback('correct')
+      setShowFireworks(true)
+      setTimeout(() => setShowFireworks(false), 2000)
     } else {
-      setFeedback('wrong');
-      setFlashRed(true);
-      setTimeout(() => setFlashRed(false), 500);
+      setFeedback('wrong')
+      setFlashRed(true)
+      setTimeout(() => setFlashRed(false), 500)
     }
 
     setTimeout(() => {
       if (currentQuestion < selectedDogs.length - 1) {
-        const nextQuestion = currentQuestion + 1;
-        setCurrentQuestion(nextQuestion);
-        setUserAnswer('');
-        setFeedback('');
+        const nextQuestion = currentQuestion + 1
+        setCurrentQuestion(nextQuestion)
+        setUserAnswer('')
+        setFeedback('')
         if (gameMode === 'multiple-choice') {
-          setMultipleChoiceOptions(generateMultipleChoiceOptions(selectedDogs[nextQuestion].dogBreed));
+          setMultipleChoiceOptions(generateMultipleChoiceOptions(selectedDogs[nextQuestion].dogBreed))
         }
       } else {
-        setGameState('finished');
+        setGameState('finished')
       }
-    }, 2000);
-  };
+    }, 2000)
+  }
 
   const shareScore = () => {
-    const text = `I just scored ${score}/100 points in the Dog Breed Guessing Game! 🐕 Can you beat my score?`;
+    const text = `I just scored ${score}/100 points in the Dog Breed Guessing Game! Can you beat my score?`
     if (navigator.share) {
       navigator.share({
         title: 'Dog Breed Game Score',
         text: text,
         url: window.location.href,
-      });
+      })
     } else {
-      navigator.clipboard.writeText(text + ' ' + window.location.href);
-      alert('Score copied to clipboard!');
+      navigator.clipboard.writeText(text + ' ' + window.location.href)
+      alert('Score copied to clipboard!')
     }
-  };
+  }
 
   const resetGame = () => {
-    setGameState('start');
-    setCurrentQuestion(0);
-    setScore(0);
-    setUserAnswer('');
-    setFeedback('');
-  };
+    setGameState('start')
+    setCurrentQuestion(0)
+    setScore(0)
+    setUserAnswer('')
+    setFeedback('')
+  }
 
   const Fireworks = () => (
     <div className="fixed inset-0 pointer-events-none z-50">
@@ -120,7 +120,7 @@ export default function  DogBreedGame() {
         </div>
       ))}
     </div>
-  );
+  )
 
   if (gameState === 'start') {
     return (
@@ -129,7 +129,7 @@ export default function  DogBreedGame() {
           <div className="text-6xl mb-4">🐕</div>
           <h1 className="text-3xl font-bold text-gray-800 mb-4">Dog Breed Game</h1>
           <p className="text-gray-600 mb-6">
-            Guess the breed of 10 different dogs and earn points! 
+            Guess the breed of 10 different dogs and earn points!
             Get 10 points for each correct answer.
           </p>
           <button
@@ -140,14 +140,14 @@ export default function  DogBreedGame() {
           </button>
         </div>
       </div>
-    );
+    )
   }
 
   if (gameState === 'playing') {
     return (
       <div className={`min-h-screen bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4 transition-all duration-300 ${flashRed ? 'bg-red-500' : ''}`}>
         {showFireworks && <Fireworks />}
-        
+
         <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full">
           <div className="flex justify-between items-center mb-6">
             <div className="text-sm text-gray-600">
@@ -159,12 +159,10 @@ export default function  DogBreedGame() {
           </div>
 
           <div className="text-center mb-6">
-            <Image
+            <img
               src={`${BASE_URL}/${selectedDogs[currentQuestion]?.hash}`}
               alt="Dog to identify"
               className="w-80 h-80 object-cover rounded-2xl mx-auto shadow-lg"
-              width={320}
-              height={320}
             />
           </div>
 
@@ -172,7 +170,7 @@ export default function  DogBreedGame() {
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
               What breed is this dog?
             </h2>
-            
+
             {feedback === '' && (
               <div>
                 {gameMode === 'multiple-choice' ? (
@@ -228,7 +226,7 @@ export default function  DogBreedGame() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (gameState === 'finished') {
@@ -241,28 +239,30 @@ export default function  DogBreedGame() {
             {score}/{selectedDogs.length * 10}
           </div>
           <p className="text-gray-600 mb-6">
-            {score === selectedDogs.length * 10 ? "Perfect score! You're a dog breed expert! 🎉" :
-             score >= 70 ? "Great job! You know your dog breeds! 🐕" :
-             score >= 40 ? "Not bad! Keep practicing! 🦴" :
-             "Keep learning about dog breeds! 🐾"}
+            {score === selectedDogs.length * 10 ? "Perfect score! You're a dog breed expert!" :
+              score >= 70 ? "Great job! You know your dog breeds!" :
+                score >= 40 ? "Not bad! Keep practicing!" :
+                  "Keep learning about dog breeds!"}
           </p>
-          
+
           <div className="space-y-3">
             <button
               onClick={shareScore}
               className="w-full bg-gradient-to-r from-pink-400 to-purple-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:from-pink-500 hover:to-purple-600 transform hover:scale-105 transition-all duration-200"
             >
-              Share Score 📱
+              Share Score
             </button>
             <button
               onClick={resetGame}
               className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:from-green-500 hover:to-blue-600 transform hover:scale-105 transition-all duration-200"
             >
-              Play Again 🔄
+              Play Again
             </button>
           </div>
         </div>
       </div>
-    );
+    )
   }
-};
+
+  return null
+}
