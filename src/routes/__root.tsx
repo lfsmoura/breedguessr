@@ -40,16 +40,17 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  // useEffect(() => {
-  //   posthog.init("phc_vNrirJpJwdfZk7LtwrRmpxKKpluWRmmVhWnFqRXcylr", {
-  //     api_host: "https://us.i.posthog.com",
-  //     ui_host: "https://us.posthog.com",
-  //     capture_pageview: 'history_change',
-  //     capture_pageleave: true,
-  //     capture_exceptions: true,
-  //     debug: import.meta.env.DEV,
-  //   })
-  // }, [])
+  useEffect(() => {
+    if (import.meta.env.DEV) return
+
+    posthog.init("phc_vNrirJpJwdfZk7LtwrRmpxKKpluWRmmVhWnFqRXcylr", {
+      api_host: "https://us.i.posthog.com",
+      ui_host: "https://us.posthog.com",
+      capture_pageview: 'history_change',
+      capture_pageleave: true,
+      capture_exceptions: true,
+    })
+  }, [])
 
   return (
     <html lang="en">
