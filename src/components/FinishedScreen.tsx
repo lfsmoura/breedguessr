@@ -1,11 +1,7 @@
-interface FinishedScreenProps {
-  score: number
-  totalQuestions: number
-  onPlayAgain: () => void
-  onShare: () => void
-}
+import { useGame } from '../context/GameContext'
 
-export function FinishedScreen({ score, totalQuestions, onPlayAgain, onShare }: FinishedScreenProps) {
+export function FinishedScreen() {
+  const { score, totalQuestions, resetGame, shareScore } = useGame()
   const maxScore = totalQuestions * 10
 
   return (
@@ -25,13 +21,13 @@ export function FinishedScreen({ score, totalQuestions, onPlayAgain, onShare }: 
 
         <div className="space-y-3">
           <button
-            onClick={onShare}
+            onClick={shareScore}
             className="w-full bg-linear-to-r from-pink-400 to-purple-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:from-pink-500 hover:to-purple-600 transform hover:scale-105 transition-all duration-200"
           >
             Share Score
           </button>
           <button
-            onClick={onPlayAgain}
+            onClick={resetGame}
             className="w-full bg-linear-to-r from-green-400 to-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:from-green-500 hover:to-blue-600 transform hover:scale-105 transition-all duration-200"
           >
             Play Again

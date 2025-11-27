@@ -1,26 +1,5 @@
-interface Dog {
-  id: number
-  dog_breed: string
-  image: string
-  hash: string
-}
-
-interface GameQuestion {
-  dog: Dog
-  options: string[]
-}
-
-interface PlayingScreenProps {
-  currentQuestion: number
-  totalQuestions: number
-  score: number
-  question: GameQuestion
-  feedback: string
-  flashRed: boolean
-  showFireworks: boolean
-  baseUrl: string
-  onAnswer: (answer: string) => void
-}
+import { useState } from 'react'
+import { useGame, IMAGE_BASE_URL } from '../context/GameContext'
 
 function Fireworks() {
   return (
@@ -44,17 +23,68 @@ function Fireworks() {
   )
 }
 
-export function PlayingScreen({
-  currentQuestion,
-  totalQuestions,
-  score,
-  question,
-  feedback,
-  flashRed,
-  showFireworks,
-  baseUrl,
-  onAnswer,
-}: PlayingScreenProps) {
+export function PlayingScreen() {
+  const { currentQuestion, totalQuestions, score, currentQuestionData, handleAnswered } = useGame()
+  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const [showFireworks, setShowFireworks] = useState(false)
+  const [flashRed, setFlashRed] = useState(false)
+
+  if (!currentQuestionData) return null
+
+  const question = currentQuestionData
+  const correctAnswer = question.dog.dog_breed
+
+  const checkAnswer = (selected: string) => {
+    if (selectedAnswer !== null) return // Already answered
+
+    const correct = correctAnswer.toLowerCase().trim() === selected.toLowerCase().trim()
+    setSelectedAnswer(selected)
+    setIsCorrect(correct)
+
+    if (correct) {
+      setShowFireworks(true)
+      setTimeout(() => setShowFireworks(false), 2000)
+    } else {
+      setFlashRed(true)
+      setTimeout(() => setFlashRed(false), 500)
+    }
+
+    setTimeout(() => {
+      setSelectedAnswer(null)
+      setIsCorrect(null)
+      handleAnswered(correct)
+    }, 2000)
+  }
+
+  const getOptionStyle = (option: string) => {
+    const isSelected = selectedAnswer?.toLowerCase().trim() === option.toLowerCase().trim()
+    const isCorrectAnswer = correctAnswer.toLowerCase().trim() === option.toLowerCase().trim()
+    const hasAnswered = selectedAnswer !== null
+
+    if (!hasAnswered) {
+      return "bg-gray-100 hover:bg-blue-100 border-gray-300 hover:border-blue-500 text-gray-800"
+    }
+
+    if (isSelected && isCorrect) {
+      // Selected correct answer - bright green
+      return "bg-green-500 border-green-600 text-white"
+    }
+
+    if (isSelected && !isCorrect) {
+      // Selected wrong answer - red
+      return "bg-red-500 border-red-600 text-white"
+    }
+
+    if (isCorrectAnswer && !isCorrect) {
+      // Show correct answer when user was wrong - muted green
+      return "bg-green-200 border-green-300 text-green-800 opacity-75"
+    }
+
+    // Other options - muted
+    return "bg-gray-100 border-gray-200 text-gray-400 opacity-50"
+  }
+
   return (
     <div className={`min-h-screen bg-linear-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4 transition-all duration-300 ${flashRed ? 'bg-red-500' : ''}`}>
       {showFireworks && <Fireworks />}
@@ -72,7 +102,7 @@ export function PlayingScreen({
         <div className="text-center mb-6">
           <img
             key={`dog-${question.dog.id}`}
-            src={`${baseUrl}/${question.dog.hash}`}
+            src={`${IMAGE_BASE_URL}/${question.dog.hash}`}
             alt="Dog to identify"
             className="w-80 h-80 object-cover rounded-2xl mx-auto shadow-lg"
           />
@@ -83,35 +113,34 @@ export function PlayingScreen({
             What breed is this dog?
           </h2>
 
-          {feedback === '' && (
-            <div className="space-y-3">
-              {question.options.map((option, index) => (
+          <div className="space-y-3">
+            {question.options.map((option, index) => {
+              const isSelected = selectedAnswer?.toLowerCase().trim() === option.toLowerCase().trim()
+              const isCorrectAnswer = correctAnswer.toLowerCase().trim() === option.toLowerCase().trim()
+              const hasAnswered = selectedAnswer !== null
+
+              return (
                 <button
                   key={index}
-                  onClick={() => onAnswer(option)}
-                  className="w-full p-4 bg-gray-100 hover:bg-blue-100 border-2 border-gray-300 hover:border-blue-500 rounded-xl text-lg font-medium text-gray-800 transition-all duration-200"
+                  onClick={() => checkAnswer(option)}
+                  disabled={hasAnswered}
+                  className={`relative w-full p-4 border-2 rounded-xl text-lg font-medium transition-all duration-300 ${getOptionStyle(option)} ${hasAnswered ? 'cursor-default' : 'cursor-pointer'}`}
                 >
                   {option.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                  {hasAnswered && isCorrectAnswer && (
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl">✓</span>
+                  )}
+                  {hasAnswered && isSelected && !isCorrect && (
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl">✗</span>
+                  )}
                 </button>
-              ))}
-            </div>
-          )}
+              )
+            })}
+          </div>
 
-          {feedback === 'correct' && (
-            <div className="text-center">
-              <div className="text-4xl text-green-500 mb-2">✅</div>
-              <p className="text-xl text-green-600 font-bold">Correct! +10 points</p>
-            </div>
-          )}
-
-          {feedback === 'wrong' && (
-            <div className="text-center">
-              <div className="text-4xl text-red-500 mb-2">❌</div>
-              <p className="text-xl text-red-600 font-bold">
-                Wrong! It was a {question.dog.dog_breed}
-              </p>
-            </div>
-          )}
+          <p className={`mt-4 h-7 text-lg font-bold ${selectedAnswer === null ? 'invisible' : ''} ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+            {isCorrect ? '+10 points!' : `It was ${correctAnswer}`}
+          </p>
         </div>
       </div>
     </div>
