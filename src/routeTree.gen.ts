@@ -10,53 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ApiDogsRouteImport } from './routes/api/dogs'
-import { Route as ApiBreedsRouteImport } from './routes/api/breeds'
+import { Route as ApiGameRouteImport } from './routes/api/game'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiDogsRoute = ApiDogsRouteImport.update({
-  id: '/api/dogs',
-  path: '/api/dogs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiBreedsRoute = ApiBreedsRouteImport.update({
-  id: '/api/breeds',
-  path: '/api/breeds',
+const ApiGameRoute = ApiGameRouteImport.update({
+  id: '/api/game',
+  path: '/api/game',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/api/breeds': typeof ApiBreedsRoute
-  '/api/dogs': typeof ApiDogsRoute
+  '/api/game': typeof ApiGameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/api/breeds': typeof ApiBreedsRoute
-  '/api/dogs': typeof ApiDogsRoute
+  '/api/game': typeof ApiGameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/api/breeds': typeof ApiBreedsRoute
-  '/api/dogs': typeof ApiDogsRoute
+  '/api/game': typeof ApiGameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/breeds' | '/api/dogs'
+  fullPaths: '/' | '/api/game'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/breeds' | '/api/dogs'
-  id: '__root__' | '/' | '/api/breeds' | '/api/dogs'
+  to: '/' | '/api/game'
+  id: '__root__' | '/' | '/api/game'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ApiBreedsRoute: typeof ApiBreedsRoute
-  ApiDogsRoute: typeof ApiDogsRoute
+  ApiGameRoute: typeof ApiGameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,18 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/dogs': {
-      id: '/api/dogs'
-      path: '/api/dogs'
-      fullPath: '/api/dogs'
-      preLoaderRoute: typeof ApiDogsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/breeds': {
-      id: '/api/breeds'
-      path: '/api/breeds'
-      fullPath: '/api/breeds'
-      preLoaderRoute: typeof ApiBreedsRouteImport
+    '/api/game': {
+      id: '/api/game'
+      path: '/api/game'
+      fullPath: '/api/game'
+      preLoaderRoute: typeof ApiGameRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -87,8 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ApiBreedsRoute: ApiBreedsRoute,
-  ApiDogsRoute: ApiDogsRoute,
+  ApiGameRoute: ApiGameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
