@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "wrangler d1 execute breedguessr-db --local --file=./migrations/0001_create_dogs_table.sql",
+    "db:seed": "bun run scripts/seed-db.ts && wrangler d1 execute breedguessr-db --local --file=./migrations/0002_seed_dogs.sql",
+    "db:reset": "rm -rf .wrangler/state && bun run db:migrate && bun run db:seed"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
@@ -19,12 +23,15 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.15.3",
+    "@cloudflare/workers-types": "^4.20251126.0",
     "@tanstack/router-plugin": "^1.132.0",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
     "typescript": "^5.7.2",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "wrangler": "^4.51.0"
   }
 }

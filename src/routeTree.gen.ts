@@ -10,33 +10,53 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiDogsRouteImport } from './routes/api/dogs'
+import { Route as ApiBreedsRouteImport } from './routes/api/breeds'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiDogsRoute = ApiDogsRouteImport.update({
+  id: '/api/dogs',
+  path: '/api/dogs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBreedsRoute = ApiBreedsRouteImport.update({
+  id: '/api/breeds',
+  path: '/api/breeds',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/breeds': typeof ApiBreedsRoute
+  '/api/dogs': typeof ApiDogsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/breeds': typeof ApiBreedsRoute
+  '/api/dogs': typeof ApiDogsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/breeds': typeof ApiBreedsRoute
+  '/api/dogs': typeof ApiDogsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/breeds' | '/api/dogs'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/api/breeds' | '/api/dogs'
+  id: '__root__' | '/' | '/api/breeds' | '/api/dogs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiBreedsRoute: typeof ApiBreedsRoute
+  ApiDogsRoute: typeof ApiDogsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +68,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/dogs': {
+      id: '/api/dogs'
+      path: '/api/dogs'
+      fullPath: '/api/dogs'
+      preLoaderRoute: typeof ApiDogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/breeds': {
+      id: '/api/breeds'
+      path: '/api/breeds'
+      fullPath: '/api/breeds'
+      preLoaderRoute: typeof ApiBreedsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiBreedsRoute: ApiBreedsRoute,
+  ApiDogsRoute: ApiDogsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

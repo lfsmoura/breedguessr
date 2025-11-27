@@ -1,6 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import dogData from '../data/index-dataset.json'
+
+interface Dog {
+  id: number
+  dog_breed: string
+  image: string
+  hash: string
+}
 
 export const Route = createFileRoute('/')({ component: DogBreedGame })
 
@@ -12,43 +18,60 @@ function DogBreedGame() {
   const [feedback, setFeedback] = useState('') // 'correct', 'wrong', ''
   const [showFireworks, setShowFireworks] = useState(false)
   const [flashRed, setFlashRed] = useState(false)
-  const [selectedDogs, setSelectedDogs] = useState<typeof dogData>([])
+  const [selectedDogs, setSelectedDogs] = useState<Dog[]>([])
   const [gameMode] = useState<'multiple-choice' | 'text-input'>('multiple-choice')
   const [multipleChoiceOptions, setMultipleChoiceOptions] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const BASE_URL = import.meta.env.DEV
     ? 'https://pub-ae384ff5bace4bf4a689ef899b70644c.r2.dev'
     : 'https://images.breedguessr.com'
 
-  const allBreeds = Array.from(new Set(dogData.map(dog => dog.dogBreed)))
+  const fetchRandomDogs = async (count: number): Promise<Dog[]> => {
+    const response = await fetch(`/api/dogs?count=${count}`)
+    const data = await response.json()
+    return data.dogs
+  }
 
-  const generateMultipleChoiceOptions = (correctBreed: string) => {
-    const otherBreeds = allBreeds.filter(breed => breed !== correctBreed)
-    const shuffledOthers = [...otherBreeds].sort(() => 0.5 - Math.random())
-    const wrongOptions = shuffledOthers.slice(0, 3)
-    const allOptions = [correctBreed, ...wrongOptions].sort(() => 0.5 - Math.random())
+  const fetchRandomBreeds = async (excludeBreed: string, count: number): Promise<string[]> => {
+    const response = await fetch(`/api/breeds?exclude=${encodeURIComponent(excludeBreed)}&count=${count}`)
+    const data = await response.json()
+    return data.breeds
+  }
+
+  const generateMultipleChoiceOptions = async (correctBreed: string) => {
+    const wrongBreeds = await fetchRandomBreeds(correctBreed, 3)
+    const allOptions = [correctBreed, ...wrongBreeds].sort(() => 0.5 - Math.random())
     return allOptions.slice(0, 4)
   }
 
-  const startGame = () => {
-    const shuffled = [...dogData].sort(() => 0.5 - Math.random())
-    const selected = shuffled.slice(0, 10)
-    setSelectedDogs(selected)
-    if (gameMode === 'multiple-choice' && selected.length > 0) {
-      setMultipleChoiceOptions(generateMultipleChoiceOptions(selected[0].dogBreed))
+  const startGame = async () => {
+    setIsLoading(true)
+    try {
+      const dogs = await fetchRandomDogs(10)
+      setSelectedDogs(dogs)
+      if (gameMode === 'multiple-choice' && dogs.length > 0) {
+        const options = await generateMultipleChoiceOptions(dogs[0].dog_breed)
+        setMultipleChoiceOptions(options)
+      }
+      setGameState('playing')
+      setCurrentQuestion(0)
+      setScore(0)
+      setUserAnswer('')
+      setFeedback('')
+    } catch (error) {
+      console.error('Error starting game:', error)
+      alert('Failed to load game data. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
-    setGameState('playing')
-    setCurrentQuestion(0)
-    setScore(0)
-    setUserAnswer('')
-    setFeedback('')
   }
 
-  const checkAnswer = (selectedAnswer?: string) => {
+  const checkAnswer = async (selectedAnswer?: string) => {
     const currentDog = selectedDogs[currentQuestion]
     const answer = selectedAnswer || userAnswer
     const userInput = answer.toLowerCase().trim()
-    const correctAnswers = [currentDog.dogBreed]
+    const correctAnswers = [currentDog.dog_breed]
 
     const isCorrect = correctAnswers.some(answer =>
       answer.toLowerCase().trim() === userInput
@@ -65,14 +88,15 @@ function DogBreedGame() {
       setTimeout(() => setFlashRed(false), 500)
     }
 
-    setTimeout(() => {
+    setTimeout(async () => {
       if (currentQuestion < selectedDogs.length - 1) {
         const nextQuestion = currentQuestion + 1
         setCurrentQuestion(nextQuestion)
         setUserAnswer('')
         setFeedback('')
         if (gameMode === 'multiple-choice') {
-          setMultipleChoiceOptions(generateMultipleChoiceOptions(selectedDogs[nextQuestion].dogBreed))
+          const options = await generateMultipleChoiceOptions(selectedDogs[nextQuestion].dog_breed)
+          setMultipleChoiceOptions(options)
         }
       } else {
         setGameState('finished')
@@ -134,9 +158,10 @@ function DogBreedGame() {
           </p>
           <button
             onClick={startGame}
-            className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:from-green-500 hover:to-blue-600 transform hover:scale-105 transition-all duration-200"
+            disabled={isLoading}
+            className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:from-green-500 hover:to-blue-600 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Start Game
+            {isLoading ? 'Loading...' : 'Start Game'}
           </button>
         </div>
       </div>
@@ -219,7 +244,7 @@ function DogBreedGame() {
               <div className="text-center">
                 <div className="text-4xl text-red-500 mb-2">❌</div>
                 <p className="text-xl text-red-600 font-bold">
-                  Wrong! It was a {selectedDogs[currentQuestion]?.dogBreed}
+                  Wrong! It was a {selectedDogs[currentQuestion]?.dog_breed}
                 </p>
               </div>
             )}
