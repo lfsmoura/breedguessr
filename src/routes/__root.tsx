@@ -26,6 +26,7 @@ export const Route = createRootRoute({
       {
         rel: 'stylesheet',
         href: appCss,
+        precedence: 'high',
       },
     ],
   }),

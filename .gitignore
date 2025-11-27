@@ -48,3 +48,7 @@ public/Images
 
 # the usual
 .env.local
+
+# tanstack start
+.tanstack-start/
+dist/

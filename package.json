@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "db:migrate": "wrangler d1 execute breedguessr-db --local --file=./migrations/0001_create_dogs_table.sql",
     "db:seed": "bun run scripts/seed-db.ts && wrangler d1 execute breedguessr-db --local --file=./migrations/0002_seed_dogs.sql",
-    "db:reset": "rm -rf .wrangler/state && bun run db:migrate && bun run db:seed"
+    "db:reset": "rm -rf .wrangler/state && bun run db:migrate && bun run db:seed",
+    "deploy": "bun run build && wrangler deploy --config dist/server/wrangler.json"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
