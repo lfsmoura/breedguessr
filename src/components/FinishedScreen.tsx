@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import { useGame } from '../context/GameContext'
 
 export function FinishedScreen() {
@@ -5,8 +6,10 @@ export function FinishedScreen() {
   const maxScore = totalQuestions * 10
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 text-center max-w-md w-full">
+    <motion.div
+    layout
+      layoutId="game-card"
+      className="bg-white rounded-3xl shadow-2xl p-8 text-center max-w-md w-full">
         <div className="text-6xl mb-4">🏆</div>
         <h1 className="text-3xl font-bold text-gray-800 mb-4">Game Complete!</h1>
         <div className="text-5xl font-bold text-green-600 mb-4">
@@ -33,7 +36,6 @@ export function FinishedScreen() {
             Play Again
           </button>
         </div>
-      </div>
-    </div>
+    </motion.div>
   )
 }

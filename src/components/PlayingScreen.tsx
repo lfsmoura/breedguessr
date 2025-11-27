@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'motion/react'
 import { useGame, IMAGE_BASE_URL } from '../context/GameContext'
 
 function Fireworks() {
@@ -29,6 +30,11 @@ export function PlayingScreen() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
   const [showFireworks, setShowFireworks] = useState(false)
   const [flashRed, setFlashRed] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
+
+  useEffect(() => {
+    setImageLoaded(false)
+  }, [currentQuestion])
 
   if (!currentQuestionData) return null
 
@@ -86,10 +92,13 @@ export function PlayingScreen() {
   }
 
   return (
-    <div className={`min-h-screen bg-linear-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4 transition-all duration-300 ${flashRed ? 'bg-red-500' : ''}`}>
+    <>
       {showFireworks && <Fireworks />}
-
-      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full">
+      <motion.div
+        layoutId="game-card"
+        layout
+        transition={{ layout: { duration: 0.4, ease: "easeInOut" } }}
+        className="bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full">
         <div className="flex justify-between items-center mb-6">
           <div className="text-sm text-gray-600">
             Question {currentQuestion + 1} of {totalQuestions}
@@ -99,12 +108,21 @@ export function PlayingScreen() {
           </div>
         </div>
 
-        <div className="text-center mb-6">
+        <div className="text-center mb-6 relative">
+          {!imageLoaded && (
+            <div className="w-80 h-80 rounded-2xl mx-auto shadow-lg bg-gray-200 animate-pulse flex items-center justify-center">
+              <svg className="w-12 h-12 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </div>
+          )}
           <img
             key={`dog-${question.dog.id}`}
             src={`${IMAGE_BASE_URL}/${question.dog.hash}`}
             alt="Dog to identify"
-            className="w-80 h-80 object-cover rounded-2xl mx-auto shadow-lg"
+            className={`w-80 h-80 object-cover rounded-2xl mx-auto shadow-lg transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0 absolute'}`}
+            onLoad={() => setImageLoaded(true)}
           />
         </div>
 
@@ -142,7 +160,7 @@ export function PlayingScreen() {
             {isCorrect ? '+10 points!' : `It was ${correctAnswer}`}
           </p>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </>
   )
 }

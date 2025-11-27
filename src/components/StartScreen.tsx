@@ -1,11 +1,14 @@
+import { motion } from 'motion/react'
 import { useGame } from '../context/GameContext'
 
 export function StartScreen() {
   const { isLoading, startGame } = useGame()
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 text-center max-w-md w-full">
+    <motion.div
+      layoutId="game-card"
+      layout
+      className="bg-white rounded-3xl shadow-2xl p-8 text-center max-w-md w-full">
         <div className="text-6xl mb-4">🐕</div>
         <h1 className="text-3xl font-bold text-gray-800 mb-4">Dog Breed Game</h1>
         <p className="text-gray-600 mb-6">
@@ -19,7 +22,6 @@ export function StartScreen() {
         >
           {isLoading ? 'Loading...' : 'Start Game'}
         </button>
-      </div>
-    </div>
+    </motion.div>
   )
 }
