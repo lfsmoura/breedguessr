@@ -98,13 +98,13 @@ export function PlayingScreen() {
         layoutId="game-card"
         layout
         transition={{ layout: { duration: 0.4, ease: "easeInOut" } }}
-        className="bg-white rounded-3xl shadow-2xl p-8 max-w-lg w-full">
-        <div className="flex justify-between items-center mb-6">
-          <div className="text-sm text-gray-600">
-            Question {currentQuestion + 1} of {totalQuestions}
-          </div>
-          <div className="text-xl font-bold text-green-600">
-            Score: {score}
+        className="card-comic p-3 sm:p-8 max-w-lg w-full">
+        <div className="mb-4 sm:mb-6">
+          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-green-500 transition-all duration-300 ease-out"
+              style={{ width: `${((currentQuestion + 1) / totalQuestions) * 100}%` }}
+            />
           </div>
         </div>
 
@@ -123,15 +123,18 @@ export function PlayingScreen() {
             alt="Dog to identify"
             className={`w-80 h-80 object-cover rounded-2xl mx-auto shadow-lg transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0 absolute'}`}
             onLoad={() => setImageLoaded(true)}
-          />
+          />        
+          <div className="mt-4 sm:mt-6 text-center">
+            <span className="text-xl font-bold text-green-600 font-chewy">
+              {score} / 100 points
+            </span>
+          </div>
         </div>
 
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            What breed is this dog?
-          </h2>
 
-          <div className="space-y-3">
+
+        <div className="text-center">
+          <div className="flex flex-col gap-2">
             {question.options.map((option, index) => {
               const isSelected = selectedAnswer?.toLowerCase().trim() === option.toLowerCase().trim()
               const isCorrectAnswer = correctAnswer.toLowerCase().trim() === option.toLowerCase().trim()
@@ -154,11 +157,11 @@ export function PlayingScreen() {
                 </button>
               )
             })}
-          </div>
 
-          <p className={`mt-4 h-7 text-lg font-bold ${selectedAnswer === null ? 'invisible' : ''} ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-            {isCorrect ? '+10 points!' : `It was ${correctAnswer}`}
+          <p className={`mt-4 h-7 text-lg font-bold ${selectedAnswer === null ? 'text-gray-600' : isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+            {selectedAnswer === null ? "Can you guess this dog's breed?" : isCorrect ? '+10 points!' : `It was ${correctAnswer}`}
           </p>
+          </div>
         </div>
       </motion.div>
     </>

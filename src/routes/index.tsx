@@ -5,15 +5,16 @@ import { GameProvider, useGame } from '../context/GameContext'
 import { StartScreen } from '../components/StartScreen'
 import { PlayingScreen } from '../components/PlayingScreen'
 import { FinishedScreen } from '../components/FinishedScreen'
+import { DogsIcon } from '../components/DogsIcon'
 
 export const Route = createFileRoute('/')({ component: DogBreedGame })
 
 function LoadingFallback() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-8 text-center max-w-md w-full">
-        <div className="text-6xl mb-4">🐕</div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Dog Breed Game</h1>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="card-comic p-8 text-center max-w-md w-full">
+        <DogsIcon />
+        <h1 className="text-3xl font-bold text-gray-800 mb-4 font-chewy">breedguessr.com</h1>
         <div className="animate-pulse text-gray-400">Loading...</div>
       </div>
     </div>
@@ -36,7 +37,7 @@ function DogBreedGame() {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <GameProvider>
-        <div className="min-h-screen bg-linear-to-br from-blue-400 to-purple-600 flex items-center justify-center p-4">
+        <div className="min-h-screen flex items-center justify-center p-4">
           <GameContent />
         </div>
       </GameProvider>

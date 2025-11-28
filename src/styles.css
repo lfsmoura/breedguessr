@@ -1,9 +1,64 @@
 @import "tailwindcss";
 
+@theme {
+  --font-chewy: "Chewy", cursive;
+}
+
+.font-chewy {
+  letter-spacing: 0.05em;
+}
+
+.card-comic {
+  background-color: #ffffff;
+  border: 3px solid #3d3d3d;
+  border-radius: 1.5rem;
+  box-shadow: 6px 6px 0 #3d3d3d;
+}
+
+.btn-comic {
+  background-color: #a8e6cf;
+  border: 3px solid #3d3d3d;
+  border-radius: 9999px;
+  box-shadow: 4px 4px 0 #3d3d3d;
+  color: #3d3d3d;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+  transition: all 0.15s ease;
+}
+
+.btn-comic:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #3d3d3d;
+}
+
+.btn-comic:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #3d3d3d;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url("/dogscut.jpg");
+  background-repeat: repeat;
+  background-size: 300px;
+  min-height: 100vh;
+}
+
+@media (min-width: 1024px) {
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 60% 70% at center, transparent 0%, transparent 60%, white 95%);
+    z-index: 0;
+  }
+
+  body > * {
+    position: relative;
+    z-index: 1;
+  }
 }

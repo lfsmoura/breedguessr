@@ -9,10 +9,14 @@ export function FinishedScreen() {
     <motion.div
     layout
       layoutId="game-card"
-      className="bg-white rounded-3xl shadow-2xl p-8 text-center max-w-md w-full">
-        <div className="text-6xl mb-4">🏆</div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Game Complete!</h1>
-        <div className="text-5xl font-bold text-green-600 mb-4">
+      className="card-comic p-8 text-center max-w-md w-full">
+        <img
+          src="/bye.gif"
+          alt="Waving goodbye"
+          className="w-48 h-48 object-cover rounded-2xl mx-auto mb-4"
+        />
+        <h1 className="text-3xl font-bold text-gray-800 mb-4 font-chewy">Game Complete!</h1>
+        <div className="text-5xl font-bold text-green-600 mb-4 font-chewy">
           {score}/{maxScore}
         </div>
         <p className="text-gray-600 mb-6">
@@ -25,13 +29,13 @@ export function FinishedScreen() {
         <div className="space-y-3">
           <button
             onClick={shareScore}
-            className="w-full bg-linear-to-r from-pink-400 to-purple-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:from-pink-500 hover:to-purple-600 transform hover:scale-105 transition-all duration-200"
+            className="w-full btn-comic font-bold py-3 px-8 text-lg font-chewy"
           >
             Share Score
           </button>
           <button
             onClick={resetGame}
-            className="w-full bg-linear-to-r from-green-400 to-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:from-green-500 hover:to-blue-600 transform hover:scale-105 transition-all duration-200"
+            className="w-full btn-comic font-bold py-3 px-8 text-lg font-chewy"
           >
             Play Again
           </button>
