@@ -101,6 +101,15 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           >
             Create cool crossword puzzles for study or play
           </a>
+          <div className="mt-2 text-sm">
+            <Link to="/about" className="text-gray-500 hover:text-gray-700">
+              About
+            </Link>
+            <span className="mx-2 text-gray-300">·</span>
+            <Link to="/privacy-policy" className="text-gray-500 hover:text-gray-700">
+              Privacy Policy
+            </Link>
+          </div>
         </footer>
         <Scripts />
       </body>
